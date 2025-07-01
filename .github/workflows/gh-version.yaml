@@ -16,8 +16,16 @@ jobs:
         with:
           dotnet-version: '7.x'
 
-      - name: Install GhVersionManager tool
-        run: dotnet tool install --global GhVersionManager --version 1.0.0-beta
+      - name: Download GhVersionManager CLI from NuGet
+        run: |
+          dotnet nuget install GhVersionManager --version 1.0.0-beta --output ./tools
+          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.0-beta/tools/net7.0/win-x64/publish/*.exe | Select-Object -First 1
+          echo "EXE_PATH=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Use GhVersionManager CLI
+        run: |
+          & $env:EXE_PATH path\to\your\file.ghx
+        shell: pwsh
 
       - name: Determine version bump
         id: version
