@@ -42,7 +42,7 @@ jobs:
       - name: Update version in changed files
         shell: pwsh
         run: |
-          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.0-beta/tools/ -Filter GhVersionManager.exe -Recurse | Select-Object -First 1
+          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.1-beta/tools/ -Filter GhVersionManager.exe -Recurse | Select-Object -First 1
           if (-not $exe) { throw "GhVersionManager.exe not found!" }
           $bump = "${{ steps.version.outputs.bump }}"
           $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
