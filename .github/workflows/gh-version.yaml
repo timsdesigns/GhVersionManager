@@ -17,8 +17,14 @@ jobs:
 
       - name: Download GhVersionManager package
         run: |
-          nuget install GhVersionManager -Version 1.0.0-beta -OutputDirectory ./tools
+          nuget install GhVersionManager -Version 1.0.1-beta -OutputDirectory ./tools
         shell: pwsh
+
+      - name: Find and run GhVersionManager.exe
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.1-beta/tools/ -Filter GhVersionManager.exe -Recurse | Select-Object -First 1
+          if (-not $exe) { throw "GhVersionManager.exe not found!" }
 
       - name: Determine version bump
         id: version
