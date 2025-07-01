@@ -11,41 +11,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '7.x'
+      - name: Install NuGet CLI
+        run: choco install nuget.commandline --no-progress
+        shell: pwsh
 
-      - name: Download GhVersionManager CLI from NuGet
+      - name: Download GhVersionManager package
         run: |
-          dotnet nuget install GhVersionManager --version 1.0.0-beta --output ./tools
-          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.0-beta/tools/net7.0/win-x64/publish/*.exe | Select-Object -First 1
-          echo "EXE_PATH=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Use GhVersionManager CLI
-        run: |
-          & $env:EXE_PATH path\to\your\file.ghx
+          nuget install GhVersionManager -Version 1.0.0-beta -OutputDirectory ./tools
         shell: pwsh
 
       - name: Determine version bump
         id: version
         run: |
-          msg="${{ github.event.head_commit.message }}"
-          if [[ "$msg" == *"BREAKING"* || "$msg" == *"MAJOR"* ]]; then
-            echo "bump=major" >> $GITHUB_OUTPUT
-          elif [[ "$msg" == *"PATCH"* || "$msg" == *"FIX"* || "$msg" == *"BUG"* ]]; then
-            echo "bump=patch" >> $GITHUB_OUTPUT
-          else
-            echo "bump=minor" >> $GITHUB_OUTPUT
-          fi
+          $msg = "${{ github.event.head_commit.message }}"
+          if ($msg -match 'BREAKING' -or $msg -match 'MAJOR') {
+            echo "bump=major" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } elseif ($msg -match 'PATCH' -or $msg -match 'FIX' -or $msg -match 'BUG') {
+            echo "bump=patch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } else {
+            echo "bump=minor" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          }
+        shell: pwsh
 
       - name: Update version in changed files
         shell: pwsh
         run: |
+          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.0-beta/tools/net7.0/win-x64/publish/*.exe | Select-Object -First 1
+          if (-not $exe) { throw "GhVersionManager.exe not found!" }
           $bump = "${{ steps.version.outputs.bump }}"
           $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
           foreach ($file in $files) {
-            $current = GhVersionManager.exe $file
+            $current = & $exe.FullName $file
             if ($current -match '^(\d+)\.(\d+)\.(\d+)$') {
               $major = [int]$matches[1]
               $minor = [int]$matches[2]
@@ -56,10 +52,11 @@ jobs:
                 "patch" { $patch++ }
               }
               $newVersion = "$major.$minor.$patch"
-              GhVersionManager.exe $file -v $newVersion
+              & $exe.FullName $file -v $newVersion
               git add $file
             }
           }
+
       - name: Commit and push version bump
         if: success()
         run: |
@@ -67,3 +64,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "ci: bump version panel in Grasshopper files [skip ci]" || echo "No changes to commit"
           git push
+        shell: pwsh
