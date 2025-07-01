@@ -1,9 +1,61 @@
-/
-├── .github/
-│   └── workflows/
-│       └── gh-version.yml
-├── GrasshopperFiles/
-│   ├── Example1.ghx
-│   └── Example2.ghx
-├── README.md
-├── LICENSE.txt
+name: Update Grasshopper File Version
+
+on:
+  push:
+    paths:
+      - 'GrasshopperFiles/**.gh*'
+
+jobs:
+  update-version:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.x'
+
+      - name: Install GhVersionManager tool
+        run: dotnet tool install --global GhVersionManager --version 1.0.0-beta
+
+      - name: Determine version bump
+        id: version
+        run: |
+          msg="${{ github.event.head_commit.message }}"
+          if [[ "$msg" == *"BREAKING"* || "$msg" == *"MAJOR"* ]]; then
+            echo "bump=major" >> $GITHUB_OUTPUT
+          elif [[ "$msg" == *"PATCH"* || "$msg" == *"FIX"* || "$msg" == *"BUG"* ]]; then
+            echo "bump=patch" >> $GITHUB_OUTPUT
+          else
+            echo "bump=minor" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update version in changed files
+        shell: pwsh
+        run: |
+          $bump = "${{ steps.version.outputs.bump }}"
+          $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
+          foreach ($file in $files) {
+            $current = GhVersionManager.exe $file
+            if ($current -match '^(\d+)\.(\d+)\.(\d+)$') {
+              $major = [int]$matches[1]
+              $minor = [int]$matches[2]
+              $patch = [int]$matches[3]
+              switch ($bump) {
+                "major" { $major++; $minor=0; $patch=0 }
+                "minor" { $minor++; $patch=0 }
+                "patch" { $patch++ }
+              }
+              $newVersion = "$major.$minor.$patch"
+              GhVersionManager.exe $file -v $newVersion
+              git add $file
+            }
+          }
+      - name: Commit and push version bump
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci: bump version panel in Grasshopper files [skip ci]" || echo "No changes to commit"
+          git push
