@@ -1,4 +1,4 @@
-name: Update Grasshopper File Version
+name: Auto-version Grasshopper Files
 
 on:
   push:
