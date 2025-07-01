@@ -23,7 +23,7 @@ Please report bugs, feature requests, or feedback via [GitHub Issues](https://gi
 ## License
 
 MIT License — applies to the distributed binaries and documentation only.  
-See [LICENSE.txt](LICENSE.txt) for details.
+See [LICENSE](LICENSE) for details.
 
 ---
 
