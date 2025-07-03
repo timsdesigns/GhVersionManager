@@ -5,6 +5,9 @@ on:
     paths:
       - 'GrasshopperFiles/**.gh*'
 
+permissions:
+  contents: write
+
 jobs:
   update-version:
     runs-on: windows-latest
@@ -44,6 +47,7 @@ jobs:
           $bump = "${{ steps.version.outputs.bump }}"
           $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
           foreach ($file in $files) {
+            if (-not (Test-Path $file)) { continue }
             $current = ghversionmanager $file
             if ($current -match '^(\d+)\.(\d+)\.(\d+)$') {
               $major = [int]$matches[1]
