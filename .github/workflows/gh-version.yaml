@@ -20,7 +20,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '7.0.x'
-          cache: true
 
       - name: Install GhVersionManager as .NET tool
         run: dotnet tool install --global GhVersionManager --version 1.0.4-beta
