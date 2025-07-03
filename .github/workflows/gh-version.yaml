@@ -65,7 +65,7 @@ jobs:
                 git add $file
               }
             } catch {
-              Write-Host "Error processing $file: $_"
+              Write-Host "Error processing ${file}: ${_}"
             }
           }
           git status
