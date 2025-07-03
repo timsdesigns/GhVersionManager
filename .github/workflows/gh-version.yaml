@@ -47,22 +47,28 @@ jobs:
           $bump = "${{ steps.version.outputs.bump }}"
           $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
           foreach ($file in $files) {
-            if (-not (Test-Path $file)) { continue }
-            $current = ghversionmanager $file
-            if ($current -match '^(\d+)\.(\d+)\.(\d+)$') {
-              $major = [int]$matches[1]
-              $minor = [int]$matches[2]
-              $patch = [int]$matches[3]
-              switch ($bump) {
-                "major" { $major++; $minor=0; $patch=0 }
-                "minor" { $minor++; $patch=0 }
-                "patch" { $patch++ }
+            try {
+              Write-Host "Processing $file"
+              if (-not (Test-Path $file)) { continue }
+              $current = ghversionmanager $file
+              if ($current -match '^(\d+)\.(\d+)\.(\d+)$') {
+                $major = [int]$matches[1]
+                $minor = [int]$matches[2]
+                $patch = [int]$matches[3]
+                switch ($bump) {
+                  "major" { $major++; $minor=0; $patch=0 }
+                  "minor" { $minor++; $patch=0 }
+                  "patch" { $patch++ }
+                }
+                $newVersion = "$major.$minor.$patch"
+                ghversionmanager $file -v $newVersion
+                git add $file
               }
-              $newVersion = "$major.$minor.$patch"
-              ghversionmanager $file -v $newVersion
-              git add $file
+            } catch {
+              Write-Host "Error processing $file: $_"
             }
           }
+          git status
 
       - name: Commit and push version bump
         if: success()
@@ -70,5 +76,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "ci: bump version panel in Grasshopper files [skip ci]" || echo "No changes to commit"
+          git pull --rebase
           git push
         shell: pwsh
