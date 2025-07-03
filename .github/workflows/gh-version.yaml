@@ -23,7 +23,8 @@ jobs:
       - name: Find and run GhVersionManager.exe
         shell: pwsh
         run: |
-          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.1-beta/tools/win-x64/ -Filter GhVersionManager.exe -Recurse | Select-Object -First 1
+          Get-ChildItem -Path ./tools/GhVersionManager.1.0.1-beta -Recurse
+          $exe = Get-ChildItem -Path ./tools/GhVersionManager.1.0.1-beta/tools/ -Filter GhVersionManager.exe -Recurse | Select-Object -First 1
           if (-not $exe) { throw "GhVersionManager.exe not found!" }
 
       - name: Determine version bump
