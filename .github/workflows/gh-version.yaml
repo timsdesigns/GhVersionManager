@@ -17,7 +17,7 @@ jobs:
 
       - name: Download GhVersionManager package
         run: |
-          nuget install GhVersionManager -Version 1.0.1-beta -OutputDirectory ./tools
+          nuget install GhVersionManager -Version 1.0.2-beta -OutputDirectory ./tools
         shell: pwsh
 
       - name: Find and run GhVersionManager.exe
