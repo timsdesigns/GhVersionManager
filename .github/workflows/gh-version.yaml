@@ -62,9 +62,12 @@ jobs:
                   "patch" { $patch++ }
                 }
                 $newVersion = "$major.$minor.$patch"
-                ghversionmanager $file -v $newVersion
-                git add $file
+              } else {
+                # No version panel found, start at 0.1.0 (or your preferred default)
+                $newVersion = "0.1.0"
               }
+              ghversionmanager $file -v $newVersion
+              git add $file
             } catch {
               Write-Host "Error processing ${file}: ${_}"
             }
