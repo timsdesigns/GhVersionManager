@@ -49,6 +49,10 @@ bool ok = GhVersionService.SetVersion("path/to/file.ghx", "1.2.3");
 You can automate version management for your Grasshopper files using GhVersionManager in a GitHub Actions workflow.
 
  - [![Example Steps on Youtube](https://img.youtube.com/vi/kIu7YrRCSZo/0.jpg)](https://www.youtube.com/watch?v=kIu7YrRCSZo)
+    - [**Version Bump** - Increment (minor) version on file with version panel](https://www.youtube.com/watch?v=kIu7YrRCSZo)
+    - [**Bug Fix** - Increment patch version](https://www.youtube.com/watch?v=kIu7YrRCSZo&t=135s)
+    - [**Breaking Change** - Increment major version](https://www.youtube.com/watch?v=kIu7YrRCSZo&t=338s)
+    - [**Adding Version** - Adding versioned (*0.1.0*) panel if non found](https://www.youtube.com/watch?v=kIu7YrRCSZo&t=455s)
 
 ### What the workflow does
 •	Detects changes to .gh and .ghx files in your repo.
