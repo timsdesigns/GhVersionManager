@@ -2,6 +2,8 @@
 
 **GhVersionManager** is a .NET 7 CLI tool and library for reading and writing version information in Grasshopper `.gh` and `.ghx` files. It is designed for automation, CI/CD, and team workflows, and is distributed as a NuGet package for easy integration.
 
+ - [Jump to example](#github-actions-example-auto-versioning-grasshopper-files)
+
 ---
 
 ## Features
@@ -45,6 +47,8 @@ bool ok = GhVersionService.SetVersion("path/to/file.ghx", "1.2.3");
 
 ## GitHub Actions Example: Auto-Versioning Grasshopper Files
 You can automate version management for your Grasshopper files using GhVersionManager in a GitHub Actions workflow.
+
+ - [![Example Steps on Youtube](https://img.youtube.com/vi/kIu7YrRCSZo/0.jpg)](https://www.youtube.com/watch?v=kIu7YrRCSZo)
 
 ### What the workflow does
 •	Detects changes to .gh and .ghx files in your repo.
