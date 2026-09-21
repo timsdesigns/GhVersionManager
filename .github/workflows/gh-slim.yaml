@@ -1,0 +1,77 @@
+name: Slim Grasshopper Files
+
+on:
+  push:
+    paths:
+      - 'GrasshopperFiles/**.gh*'
+
+concurrency:
+  group: gh-slim-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  STRIP_NICK: strip
+  DELETE_NICK: delete
+
+permissions:
+  contents: write
+
+jobs:
+  slim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Linux image support
+        run: sudo apt-get update && sudo apt-get install -y libgdiplus
+      - run: dotnet tool install --global GhTools --version 2.0.2
+      - name: Strip, delete, and verify
+        shell: pwsh
+        run: |
+          $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
+          New-Item -ItemType Directory -Force reports | Out-Null
+          foreach ($file in $files) {
+            if (-not (Test-Path $file)) { continue }
+            $name = [IO.Path]::GetFileName($file)
+
+            ghtools strip $file --in-place --nick $env:STRIP_NICK -r "reports/$name.strip.json"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "::error file=$file::strip failed"
+              exit 1
+            }
+
+            ghtools delete $file --in-place --nick $env:DELETE_NICK -r "reports/$name.delete.json"
+            $deleteExit = $LASTEXITCODE
+            if ($deleteExit -eq 3) {
+              Write-Host "$name : nothing nicknamed $env:DELETE_NICK"
+            } elseif ($deleteExit -ne 0) {
+              Write-Host "::error file=$file::delete failed"
+              exit 1
+            }
+
+            ghtools verify $file -o "reports/$name.verify.json"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "::error file=$file::verify failed"
+              exit 1
+            }
+
+            Remove-Item "$file.bak" -ErrorAction SilentlyContinue
+            git add -- $file
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: slim-reports
+          path: reports/
+      - name: Commit
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci: slim Grasshopper files [skip ci]" || echo "No changes to commit"
+          git pull --rebase
+          git push

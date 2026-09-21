@@ -1,0 +1,93 @@
+name: Auto-version Grasshopper Files
+
+on:
+  push:
+    paths:
+      - 'GrasshopperFiles/**.gh*'
+
+concurrency:
+  group: gh-version-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Linux image support
+        run: sudo apt-get update && sudo apt-get install -y libgdiplus
+
+      - name: Install GhVersionManager
+        run: dotnet tool install --global GhVersionManager --version 2.0.2
+
+      - name: Determine version bump
+        id: version
+        shell: pwsh
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          $msg = $env:COMMIT_MESSAGE
+          if ($msg -match 'BREAKING' -or $msg -match 'MAJOR') {
+            "bump=major" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } elseif ($msg -match 'PATCH' -or $msg -match 'FIX' -or $msg -match 'BUG') {
+            "bump=patch" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          } else {
+            "bump=minor" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          }
+
+      - name: Update version in changed files
+        shell: pwsh
+        run: |
+          $bump = "${{ steps.version.outputs.bump }}"
+          $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
+          foreach ($file in $files) {
+            if (-not (Test-Path $file)) { continue }
+
+            Write-Host "Processing $file"
+            $current = ghversionmanager $file 2>$null
+            $readExit = $LASTEXITCODE
+
+            if ($readExit -eq 0 -and $current -match '^(\d+)\.(\d+)\.(\d+)$') {
+              $major = [int]$matches[1]
+              $minor = [int]$matches[2]
+              $patch = [int]$matches[3]
+              switch ($bump) {
+                'major' { $major++; $minor = 0; $patch = 0 }
+                'minor' { $minor++; $patch = 0 }
+                'patch' { $patch++ }
+              }
+              $newVersion = "$major.$minor.$patch"
+            } elseif ($readExit -eq 2) {
+              $newVersion = '0.1.0'
+            } else {
+              Write-Error "Could not read the version from $file (exit $readExit)"
+              exit 1
+            }
+
+            ghversionmanager $file -v $newVersion
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Could not set the version in $file"
+              exit 1
+            }
+            git add -- $file
+          }
+
+      - name: Commit and push version bump
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci: bump version panel in Grasshopper files [skip ci]" || echo "No changes to commit"
+          git pull --rebase
+          git push
