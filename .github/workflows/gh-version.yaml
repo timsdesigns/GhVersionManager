@@ -16,12 +16,12 @@ jobs:
   update-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '8.0.x'
 
@@ -29,7 +29,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libgdiplus
 
       - name: Install GhVersionManager
-        run: dotnet tool install --global GhVersionManager --version 2.0.2
+        run: dotnet tool install --global GhVersionManager --version 3.0.0
 
       - name: Determine version bump
         id: version

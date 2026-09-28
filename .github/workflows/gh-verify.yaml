@@ -9,16 +9,16 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '8.0.x'
       - name: Install Linux image support
         run: sudo apt-get update && sudo apt-get install -y libgdiplus
       - name: Install GhTools
-        run: dotnet tool install --global GhTools --version 2.0.2
+        run: dotnet tool install --global GhTools --version 3.0.0
       - name: Verify changed files
         shell: pwsh
         run: |
@@ -35,7 +35,7 @@ jobs:
             }
           }
           if ($failed -gt 0) { exit 1 }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: verify-reports

@@ -2,15 +2,15 @@
 
 Use these .NET 8 command-line tools to read, check, and update Grasshopper `.gh` and `.ghx` files in automated workflows.
 
-- **GhVersionManager** keeps the established version-panel command and existing pipeline usage.
-- **GhTools** adds file verification, size inspection, data cleanup, object editing, and before/after checks.
+- **GhVersionManager** keeps the established version command and existing pipeline usage while synchronizing the document and version Panel on writes.
+- **GhTools** adds document-version checks, Panel lookup and normalization, file verification, size inspection, data cleanup, object editing, and before/after checks.
 
 ## Install
 
 For an existing version-management pipeline:
 
 ```powershell
-dotnet tool install --global GhVersionManager --version 2.0.2
+dotnet tool install --global GhVersionManager --version 3.0.0
 ghversionmanager path\to\definition.gh
 ghversionmanager path\to\definition.gh -v 1.2.3
 ```
@@ -18,30 +18,47 @@ ghversionmanager path\to\definition.gh -v 1.2.3
 For the expanded command set:
 
 ```powershell
-dotnet tool install --global GhTools --version 2.0.2
+dotnet tool install --global GhTools --version 3.0.0
 ghtools verify path\to\definition.gh
 ```
 
-The existing `ghversionmanager` command and exit-code behavior remain available in the compatibility package. `ghtools version` provides the same version-panel operation in GhTools.
+The existing `ghversionmanager` command and exit-code behavior remain available in the compatibility package. Legacy reads still return the version Panel value; writes keep it synchronized with the document version. `ghtools version` reads the document version first, falls back to older version Panels, and reports disagreements.
+
+## Moving from 2.x to 3.x
+
+Version 3 introduces synchronized document and Panel versions. Upgrade every workflow that writes versions to the same files at the same time. After a version 3 write, a 2.x writer updates only the legacy Panel value and can leave the two values inconsistent. Version 3 reports that mismatch instead of silently selecting one.
+
+To repair a mismatch, decide which version is correct and write it again with version 3:
+
+```powershell
+ghtools version path\to\definition.gh --set 1.2.3
+```
+
+Read-only 2.x consumers can continue reading the Panel value. `--header-only` returns not found for an older Panel-only file until a version 3 writer adds the document version. The unchanged 2.0.2 examples remain on the [`legacy/2.x`](https://github.com/timsdesigns/GhVersionManager/tree/legacy/2.x) branch.
 
 ## Features
 
 | Command | Purpose |
 |---|---|
 | `ghversionmanager file.gh` | Read the first panel nicknamed `version`. |
-| `ghversionmanager file.gh -v 1.2.3` | Set that panel, creating it if needed. |
-| `ghtools verify file.gh` | Check known archive counters, indices, wires, groups, and references. |
+| `ghversionmanager file.gh -v 1.2.3` | Set the version, creating the Panel if needed and synchronizing both stored values. |
+| `ghtools version file.gh [--json]` | Read the document version with version-Panel fallback and report mismatches. |
+| `ghtools version file.gh --header-only` | Read the early document version without loading the full definition. |
+| `ghtools version file.gh --set 1.2.3` | Update the document version and version Panel together. |
+| `ghtools panel file.gh --nick N [--all]` | Read stored Panel text and identify matching instances. |
+| `ghtools normalize file.gh --type G --map Input=Nick` | Preview or apply Panel nicknames derived from their input wires. |
+| `ghtools verify file.gh` | Check archive structure and version consistency. |
 | `ghtools weigh file.gh --top 10` | Show which objects contribute most to file size. |
 | `ghtools strip file.gh --nick strip` | Remove internalized parameter data selected by nickname. |
 | `ghtools delete file.gh --nick delete` | Remove selected objects and their associated references. |
 | `ghtools clone file.gh --guid G` | Copy an object with fresh identifiers. |
 | `ghtools connect` / `disconnect` | Add or remove a wire between parameters. |
 | `ghtools set` | Change a nickname, panel text, or supported persistent value. |
-| `ghtools replace` | Replace an object and transfer its connections by parameter position. |
+| `ghtools replace` | Replace an object while keeping compatible connections. |
 | `ghtools ghx input.gh output.ghx` | Export the XML representation for inspection or comparison. |
 | `ghtools attest before.gh after.gh -r report.json` | Check an operation's before/after result. |
 
-Run `ghtools <command> --help` for the complete options. Editing commands write a separate output file by default. `--in-place` overwrites the input and keeps a `.bak`; `--dry-run` reports what would change without writing it.
+Run `ghtools <command> --help` for the complete options. Object-editing commands write a separate output file by default; `--in-place` overwrites the input and keeps a `.bak`. Version writes update the input directly. `normalize` previews changes by default; use `--apply` to update the input or `--output` to choose a separate output file. A normalization with no changes writes nothing.
 
 ## Worked GitHub Actions examples
 
@@ -84,23 +101,30 @@ Copy [`.github/workflows/gh-slim.yaml`](.github/workflows/gh-slim.yaml), then ch
 
 ## Runner support
 
-Version 2.0.2 supports archive operations on Windows and Linux. Linux runners need `libgdiplus`; the included workflows install it before using either tool. The examples use `ubuntu-latest`, while the same commands remain valid on Windows.
+Version 3.0.0 supports archive operations on Windows and Linux. Linux runners need `libgdiplus`; the included workflows install it before using either tool. The examples use `ubuntu-latest`, while the same commands remain valid on Windows.
 
 ## Exit codes
+
+Named `ghtools` commands use:
 
 | Code | Meaning |
 |---:|---|
 | `0` | Command completed successfully. |
-| `1` | Processing failed or the result was invalid. |
-| `2` | Usage error, missing file, or no version panel/value. |
-| `3` | An edit selector matched nothing or a write failed. |
+| `1` | The archive, operation, or verification failed. |
+| `2` | Command usage was invalid. |
+| `3` | The requested component, Panel, or object was not found. |
+| `4` | A file or runtime input/output operation failed. |
+
+Legacy `ghversionmanager` forms retain their established meanings: `0` success, `1` processing error, `2` missing version or usage error, and `3` write failure.
 
 ## Current release
 
-Version `2.0.2`:
+Version `3.0.0`:
 
 - keeps the original version-panel pipeline command;
-- adds verification, file-size inspection, conversion, cleanup, and object-editing commands;
+- synchronizes the document version and version Panel on writes;
+- adds early document-version reads, mismatch checks, Panel lookup, and wire-based Panel normalization;
+- includes verification, file-size inspection, conversion, cleanup, and object-editing commands;
 - supports Windows and Linux pipelines.
 
 ## Feedback and license

@@ -20,15 +20,15 @@ jobs:
   slim:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '8.0.x'
       - name: Install Linux image support
         run: sudo apt-get update && sudo apt-get install -y libgdiplus
-      - run: dotnet tool install --global GhTools --version 2.0.2
+      - run: dotnet tool install --global GhTools --version 3.0.0
       - name: Strip, delete, and verify
         shell: pwsh
         run: |
@@ -62,7 +62,7 @@ jobs:
             Remove-Item "$file.bak" -ErrorAction SilentlyContinue
             git add -- $file
           }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: slim-reports
