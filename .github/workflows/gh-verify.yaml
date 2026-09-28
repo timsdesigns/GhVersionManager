@@ -1,0 +1,42 @@
+name: Verify Grasshopper Files
+
+on:
+  pull_request:
+    paths:
+      - 'GrasshopperFiles/**.gh*'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install Linux image support
+        run: sudo apt-get update && sudo apt-get install -y libgdiplus
+      - name: Install GhTools
+        run: dotnet tool install --global GhTools --version 2.0.2
+      - name: Verify changed files
+        shell: pwsh
+        run: |
+          $files = git diff --name-only origin/${{ github.base_ref }}...HEAD | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
+          New-Item -ItemType Directory -Force reports | Out-Null
+          $failed = 0
+          foreach ($file in $files) {
+            if (-not (Test-Path $file)) { continue }
+            $name = [IO.Path]::GetFileName($file)
+            ghtools verify $file -o "reports/$name.verify.json"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "::error file=$file::verify failed"
+              $failed++
+            }
+          }
+          if ($failed -gt 0) { exit 1 }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verify-reports
+          path: reports/
