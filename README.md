@@ -64,6 +64,8 @@ Run `ghtools <command> --help` for the complete options. Object-editing commands
 
 The workflows in [`.github/workflows`](.github/workflows) are complete examples that can be copied into another repository. Each one shows the install step, file selection, command invocation, exit-code handling, and resulting commit or report.
 
+Copy [`.github/scripts/changed-files.ps1`](.github/scripts/changed-files.ps1) with the selected workflow. It handles initial pushes and multi-commit changes and stops the job if the comparison cannot be resolved. Keep the full-history checkout used by the examples.
+
 The two write-back examples are alternatives. If versioning and cleanup must run on the same files for the same push, combine their command steps into one workflow so two jobs do not race to rewrite the same binary file.
 
 ### Auto-version: `gh-version.yaml`

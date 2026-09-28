@@ -20,9 +20,12 @@ jobs:
       - name: Install GhTools
         run: dotnet tool install --global GhTools --version 3.0.0
       - name: Verify changed files
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+          AFTER_SHA: ${{ github.sha }}
         shell: pwsh
         run: |
-          $files = git diff --name-only origin/${{ github.base_ref }}...HEAD | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
+          $files = @(& ./.github/scripts/changed-files.ps1 -Before $env:BASE_REF -After $env:AFTER_SHA -MergeBase)
           New-Item -ItemType Directory -Force reports | Out-Null
           $failed = 0
           foreach ($file in $files) {

@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
@@ -47,10 +47,13 @@ jobs:
           }
 
       - name: Update version in changed files
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
         shell: pwsh
         run: |
           $bump = "${{ steps.version.outputs.bump }}"
-          $files = git diff --name-only ${{ github.event.before }} ${{ github.sha }} | Where-Object { $_ -like 'GrasshopperFiles/*.gh*' }
+          $files = @(& ./.github/scripts/changed-files.ps1 -Before $env:BEFORE_SHA -After $env:AFTER_SHA)
           foreach ($file in $files) {
             if (-not (Test-Path $file)) { continue }
 
