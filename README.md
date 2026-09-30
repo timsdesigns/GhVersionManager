@@ -10,7 +10,7 @@ Use these .NET 8 command-line tools to read, check, and update Grasshopper `.gh`
 For an existing version-management pipeline:
 
 ```powershell
-dotnet tool install --global GhVersionManager --version 3.0.0
+dotnet tool install --global GhVersionManager --version 3.1.0
 ghversionmanager path\to\definition.gh
 ghversionmanager path\to\definition.gh -v 1.2.3
 ```
@@ -18,7 +18,7 @@ ghversionmanager path\to\definition.gh -v 1.2.3
 For the expanded command set:
 
 ```powershell
-dotnet tool install --global GhTools --version 3.0.0
+dotnet tool install --global GhTools --version 3.1.0
 ghtools verify path\to\definition.gh
 ```
 
@@ -103,7 +103,7 @@ Copy [`.github/workflows/gh-slim.yaml`](.github/workflows/gh-slim.yaml), then ch
 
 ## Runner support
 
-Version 3.0.0 supports archive operations on Windows and Linux. Linux runners need `libgdiplus`; the included workflows install it before using either tool. The examples use `ubuntu-latest`, while the same commands remain valid on Windows.
+Version 3.1.0 supports archive operations on Windows and Linux. Linux runners need `libgdiplus`; the included workflows install it before using either tool. The examples use `ubuntu-latest`, while the same commands remain valid on Windows.
 
 ## Exit codes
 
@@ -121,7 +121,7 @@ Legacy `ghversionmanager` forms retain their established meanings: `0` success, 
 
 ## Current release
 
-Version `3.0.0`:
+Version `3.1.0`:
 
 - keeps the original version-panel pipeline command;
 - synchronizes the document version and version Panel on writes;
@@ -134,3 +134,17 @@ Version `3.0.0`:
 Report bugs or feature requests through [GitHub Issues](https://github.com/timsdesigns/GhVersionManager/issues).
 
 MIT License. See [LICENSE](LICENSE).
+
+## Version-field consumers and guarded writes
+
+The [version-field contract](docs/version-field.md), [hashed fixtures](fixtures/header/manifest.json) and [acceptance evidence](docs/acceptance-evidence.md) support independent readers.
+
+`ghtools bootstrap` prepares the runtime for full archive operations. `verify --json` explicitly selects its existing JSON output. Root and subcommand help work without supplying required operands.
+
+Version writes retain their direct-write default. `version file.gh --set 1.2.3 --dry-run` validates without writing; `--output new-file.gh` writes a separate file and refuses an existing destination. Both support `--json`.
+
+A named version write reuses a unique `version__renamed` Panel when the canonical Panel is absent; multiple candidates fail without writing. Legacy positional writes are unchanged. Custom suffixes are not guessed. Automated component-specific pipelines should write only when normalization reports a selected Version input; a variant without that input stays unversioned.
+
+## macOS scope
+
+Installed CLI archive smoke is tested on macOS CI. Install .NET and `mono-libgdiplus` with Homebrew, then export `DYLD_LIBRARY_PATH="$(brew --prefix mono-libgdiplus)/lib"` and `DYLD_FALLBACK_LIBRARY_PATH="$DYLD_LIBRARY_PATH"` in the shell running the tool. This is CLI support for the tested operations, not certification of every macOS release, architecture, Rhino GUI workflow or Finder integration. Header-only reads do not need the image-library setup. Manual Rhino/Grasshopper checks remain separate.

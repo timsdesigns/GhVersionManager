@@ -1,0 +1,231 @@
+[
+  {
+    "file": "valid.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 90,
+    "sha256": "ead60ab5f1eab0a0a10257be051d4ac5660980bb9b250adcd7236505d5909617"
+  },
+  {
+    "file": "valid.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 384,
+    "sha256": "2b4c42be56a41fdc641415ac5c8090166e17f0f2b024c6c8894e55915b3e1899"
+  },
+  {
+    "file": "missing.gh",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "bytes": 60,
+    "sha256": "9376cecbda15c4e8ebcc693541e16c7fcc78223a03217accf43115e2f45c41b4"
+  },
+  {
+    "file": "missing.ghx",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "bytes": 296,
+    "sha256": "c68aad4df4647ab05c4aab8dae3948703064f01bbe15487025da53f76e884a78"
+  },
+  {
+    "file": "invalid.gh",
+    "expectedStatus": "invalid",
+    "expectedValue": "01.2.3",
+    "bytes": 91,
+    "sha256": "3a0957adb149cf9ca414d5a5e33479b04de3a2202b2aa30f674bb52ebdafa9be"
+  },
+  {
+    "file": "invalid.ghx",
+    "expectedStatus": "invalid",
+    "expectedValue": "01.2.3",
+    "bytes": 385,
+    "sha256": "df0b16a945d8fb30ae09fcc3f3b1ba20f8df971bd9c46c3d907feff410ad8233"
+  },
+  {
+    "file": "duplicate.gh",
+    "expectedStatus": "duplicate",
+    "expectedValue": null,
+    "bytes": 97,
+    "sha256": "f04af15d27dc672c946837e2be0d53e19ea82837924384dbe719061fa2cf39d4"
+  },
+  {
+    "file": "duplicate.ghx",
+    "expectedStatus": "duplicate",
+    "expectedValue": null,
+    "bytes": 473,
+    "sha256": "a6c70ba626eb8d2d93bf0449dea6be22e3df73777e6bfb2957360eb72ed549e7"
+  },
+  {
+    "file": "large-object-section.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "3.4.5",
+    "bytes": 1049024,
+    "sha256": "f14df632f4dcf4d337bcecc2b9095a44d26da6c54c9b7a340b62c16c9011dbea"
+  },
+  {
+    "file": "truncated.gh",
+    "expectedStatus": "malformed",
+    "expectedValue": null,
+    "bytes": 46,
+    "sha256": "cff6c80ca30ebc9fe690d8501aeb652b915f87db8bd8db9a381255ef0adb7596"
+  },
+  {
+    "file": "malformed.ghx",
+    "expectedStatus": "malformed",
+    "expectedValue": null,
+    "bytes": 34,
+    "sha256": "0690139fe7d328d511d2f2c41b7a5efb0ea3626794427966bef5e09779d37f13"
+  },
+  {
+    "file": "mismatch.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "9.9.9",
+    "expectedCombinedStatus": "mismatch",
+    "expectedPanelValues": [
+      "2.3.4"
+    ],
+    "bytes": 12086,
+    "sha256": "3c5f9683a1499edb850ec34da187f8fd165a15cd4580e951e7dc2bc0ab4bc3c8"
+  },
+  {
+    "file": "panel-casing.gh",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "expectedCombinedStatus": "invalid",
+    "expectedPanelNickNames": [
+      "VERSION",
+      "version"
+    ],
+    "expectedPanelValues": [
+      "stray-one",
+      "stray-two"
+    ],
+    "bytes": 12184,
+    "sha256": "b89d822c3df99bff92f584f15c7254dcd993ba8171d9562d679b9ff1f41c35d5"
+  },
+  {
+    "file": "mismatch.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "9.9.9",
+    "expectedCombinedStatus": "mismatch",
+    "expectedPanelValues": [
+      "2.3.4"
+    ],
+    "bytes": 89561,
+    "sha256": "b4c55d3bffe4b64a4c25fb745896c2cdbd04dbbadfb9fe996064f1c22501f5d4"
+  },
+  {
+    "file": "panel-casing.ghx",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "expectedCombinedStatus": "invalid",
+    "expectedPanelNickNames": [
+      "VERSION",
+      "version"
+    ],
+    "expectedPanelValues": [
+      "stray-one",
+      "stray-two"
+    ],
+    "bytes": 168394,
+    "sha256": "609ee635fb41e30a5289794d073f7bad3b31a9965df074c4d114d5e9a5cef1ad"
+  },
+  {
+    "file": "wrong-location.gh",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "bytes": 90,
+    "sha256": "42e610eace3d52d866e8309283704c325f16a7ef60c9740b353a1cb3a5c6a2ba"
+  },
+  {
+    "file": "wrong-location.ghx",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "bytes": 384,
+    "sha256": "b780864910b207fd7459f421cd7df5f8dd8631e74c1b77f162b8d48f059ab464"
+  },
+  {
+    "file": "nested-decoy.ghx",
+    "expectedStatus": "missing",
+    "expectedValue": null,
+    "bytes": 431,
+    "sha256": "0a134d83e887e52c7c9421eedacdc878117d1c57e19ecf4d28bc5b32397dd2f0"
+  },
+  {
+    "file": "malformed.gh",
+    "expectedStatus": "malformed",
+    "expectedValue": null,
+    "bytes": 3,
+    "sha256": "5ae7e6a42304dc6e4176210b83c43024f99a0bce9a870c3b6d2c95fc8ebfb74c"
+  },
+  {
+    "file": "truncated.ghx",
+    "expectedStatus": "malformed",
+    "expectedValue": null,
+    "bytes": 243,
+    "sha256": "5c24f00caed9d05e9afc23cc9188b6b906a4f2330cc32c301f93b45f5aeaff89"
+  },
+  {
+    "file": "truncated-after-header.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 302,
+    "sha256": "5c62b0cc1c309a87edde92dfb76a0ef3881719e7f283d123bca3d4313e77114b"
+  },
+  {
+    "file": "truncated-after-header.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 88,
+    "sha256": "f0166e90041b07c263486d59e80e4136727d2ab9328191a931d051eb75dd0b0a"
+  },
+  {
+    "file": "large-object-section.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 1049010,
+    "sha256": "0105ac7a44eb72ad626cea1eebc72a9611b1a0dbc9595b5ee71efedf9a3bfeae"
+  },
+  {
+    "file": "plane-before-version.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 128,
+    "sha256": "85ad3df04c1a77576d92b26074e0b3ec30e87ab585afb2926731cb9e7839dc7d"
+  },
+  {
+    "file": "plane-before-version.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 1166,
+    "sha256": "8c224569cde9532eb4088902cdca97418b6192bb63940e61aa67b52fdf281a56"
+  },
+  {
+    "file": "saved-gui.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 641501,
+    "sha256": "2bbe9e7c0528959e928b88678003cffc4572bd2b65b05244e26a210fb2c33d50"
+  },
+  {
+    "file": "saved-gui.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 35947,
+    "sha256": "1d16b2d9162e4068047dc5526d4520671e07669139e4fc635d0365e5aab7027d"
+  },
+  {
+    "file": "saved-after-edit.gh",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 35802,
+    "sha256": "9114822e44aa143bbc05a85aceeefa376d6d92c90fd2ac2beeeb4716ffd45a46"
+  },
+  {
+    "file": "saved-after-edit.ghx",
+    "expectedStatus": "valid",
+    "expectedValue": "1.2.3",
+    "bytes": 641363,
+    "sha256": "e2d1145fb4cbf773ae8b0234b969a63c501d76f60b24dfbcd7e2577327128185"
+  }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "file": "saved-after-edit.gh",
+    "host": "Windows document host",
+    "rhinoVersion": "8.30.26051.14001",
+    "edit": "non-version Panel nickname",
+    "header": "1.2.3",
+    "panelEditPersisted": true,
+    "verify": "PASS",
+    "nativeRead": "PASS",
+    "sha256": "9114822e44aa143bbc05a85aceeefa376d6d92c90fd2ac2beeeb4716ffd45a46"
+  },
+  {
+    "file": "saved-after-edit.ghx",
+    "host": "Windows document host",
+    "rhinoVersion": "8.30.26051.14001",
+    "edit": "non-version Panel nickname",
+    "header": "1.2.3",
+    "panelEditPersisted": true,
+    "verify": "PASS",
+    "nativeRead": "PASS",
+    "sha256": "e2d1145fb4cbf773ae8b0234b969a63c501d76f60b24dfbcd7e2577327128185"
+  }
+]

@@ -1,0 +1,205 @@
+[
+  {
+    "file": "valid.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "valid.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "missing.gh",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "missing.ghx",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "invalid.gh",
+    "expected": "invalid",
+    "observed": "invalid",
+    "value": "01.2.3",
+    "pass": true
+  },
+  {
+    "file": "invalid.ghx",
+    "expected": "invalid",
+    "observed": "invalid",
+    "value": "01.2.3",
+    "pass": true
+  },
+  {
+    "file": "duplicate.gh",
+    "expected": "duplicate",
+    "observed": "duplicate",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "duplicate.ghx",
+    "expected": "duplicate",
+    "observed": "duplicate",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "large-object-section.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "3.4.5",
+    "pass": true
+  },
+  {
+    "file": "truncated.gh",
+    "expected": "malformed",
+    "observed": "malformed",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "malformed.ghx",
+    "expected": "malformed",
+    "observed": "malformed",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "mismatch.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "9.9.9",
+    "pass": true
+  },
+  {
+    "file": "panel-casing.gh",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "mismatch.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "9.9.9",
+    "pass": true
+  },
+  {
+    "file": "panel-casing.ghx",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "wrong-location.gh",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "wrong-location.ghx",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "nested-decoy.ghx",
+    "expected": "missing",
+    "observed": "missing",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "malformed.gh",
+    "expected": "malformed",
+    "observed": "malformed",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "truncated.ghx",
+    "expected": "malformed",
+    "observed": "malformed",
+    "value": null,
+    "pass": true
+  },
+  {
+    "file": "truncated-after-header.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "truncated-after-header.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "large-object-section.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "plane-before-version.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "plane-before-version.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "saved-gui.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "saved-gui.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "saved-after-edit.gh",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  },
+  {
+    "file": "saved-after-edit.ghx",
+    "expected": "valid",
+    "observed": "valid",
+    "value": "1.2.3",
+    "pass": true
+  }
+]

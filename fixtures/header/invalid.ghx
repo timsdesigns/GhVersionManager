@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Archive name="Root"><chunks count="1"><chunk name="Definition"><chunks count="2">
+<chunk name="ValueTable"><items count="1">
+          <item name="GhTools.Version" type_name="gh_string" type_code="10">01.2.3</item>
+</items></chunk><chunk name="DefinitionObjects"><items count="0"/><chunks count="0"/></chunk>
+</chunks></chunk></chunks></Archive>
