@@ -7,6 +7,8 @@ Use these .NET 8 command-line tools to read, check, and update Grasshopper `.gh`
 
 ## Install
 
+Install the .NET 8 SDK to use `dotnet tool install`. These packages run on the .NET runtime; they are not self-contained executables. Rhino does not need to be installed to run the CLI. Full archive commands require runtime preparation through `ghtools bootstrap`, with network access on first setup if the required runtime files are not already available. Linux and macOS also need the native image support described below. Header-only reads skip that archive-runtime setup but still use .NET.
+
 For an existing version-management pipeline:
 
 ```powershell
