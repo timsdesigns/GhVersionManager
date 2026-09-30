@@ -10,7 +10,7 @@ Use these .NET 8 command-line tools to read, check, and update Grasshopper `.gh`
 For an existing version-management pipeline:
 
 ```powershell
-dotnet tool install --global GhVersionManager --version 3.1.0
+dotnet tool install --global GhVersionManager --version 3.1.1
 ghversionmanager path\to\definition.gh
 ghversionmanager path\to\definition.gh -v 1.2.3
 ```
@@ -18,7 +18,7 @@ ghversionmanager path\to\definition.gh -v 1.2.3
 For the expanded command set:
 
 ```powershell
-dotnet tool install --global GhTools --version 3.1.0
+dotnet tool install --global GhTools --version 3.1.1
 ghtools verify path\to\definition.gh
 ```
 
@@ -103,7 +103,7 @@ Copy [`.github/workflows/gh-slim.yaml`](.github/workflows/gh-slim.yaml), then ch
 
 ## Runner support
 
-Version 3.1.0 supports archive operations on Windows and Linux. Linux runners need `libgdiplus`; the included workflows install it before using either tool. The examples use `ubuntu-latest`, while the same commands remain valid on Windows.
+Version 3.1.1 supports archive operations on Windows and Linux. Linux runners need `libgdiplus`; the included workflows install it before using either tool. The examples use `ubuntu-latest`, while the same commands remain valid on Windows.
 
 ## Exit codes
 
@@ -121,8 +121,9 @@ Legacy `ghversionmanager` forms retain their established meanings: `0` success, 
 
 ## Current release
 
-Version `3.1.0`:
+Version `3.1.1`:
 
+- fixes `ghtools --version` and `ghversionmanager --version` to print the installed tool version; archive and legacy command behavior is unchanged from 3.1.0;
 - keeps the original version-panel pipeline command;
 - synchronizes the document version and version Panel on writes;
 - adds early document-version reads, mismatch checks, Panel lookup, and wire-based Panel normalization;
